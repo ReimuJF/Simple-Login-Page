@@ -6,7 +6,15 @@ if not os.path.isfile('./users.dic'):
     with open('./users.dic', 'w') as f:
         f.write('{}')
 
+def open_file():
+    with open('./users.dic') as db:
+        f_dict = db.read()
+    return json.loads(f_dict)
 
+def write_file(js_dict):
+    dict_json = json.dumps(js_dict)
+    with open('./users.dic', 'w') as db:
+        db.write(dict_json)
 def generate_password():
     rng_password = PasswordGenerator()
     rng_password.minlen = 4
@@ -19,18 +27,14 @@ def generate_password():
 
 
 def create_user(*args):
-    with open('./users.dic') as db:
-        f_dict = db.read()
-    js_dict = json.loads(f_dict)
+    js_dict = open_file()
     if args[0] in js_dict:
         return False, None
     passwordo = args[1]
     if not args[1]:
         passwordo = generate_password()
     js_dict[args[0]] = passwordo
-    dict_json = json.dumps(js_dict)
-    with open('./users.dic', 'w') as db:
-        db.write(dict_json)
+    write_file(js_dict)
     return True, passwordo
 
 
@@ -45,23 +49,17 @@ def user_login(*args):
 
 
 def delete_user(user_name):
-    with open('./users.dic') as db:
-        f_dict = db.read()
-    js_dict = json.loads(f_dict)
+    js_dict = open_file()
     if user_name not in js_dict:
         return False
     else:
         del js_dict[user_name]
-    dict_json = json.dumps(js_dict)
-    with open('./users.dic', 'w') as db:
-        db.write(dict_json)
+    write_file(js_dict)
     return True
 
 
 def get_list():
-    with open('./users.dic') as db:
-        f_dict = db.read()
-    js_dict = json.loads(f_dict)
+    js_dict = open_file()
     return '\n'.join(js_dict.keys())  # users_list
 
 
