@@ -58,5 +58,4 @@ if __name__ == "__main__":
     button_get.grid(row=2, column=0, pady=10, sticky='ws', padx=5)
     button_delete = tk.Button(text='DELETE USER', width=15, command=delete_button)
     button_delete.grid(row=2, column=1, pady=10, sticky='es', padx=10)
-
     window.mainloop()
