@@ -1,21 +1,41 @@
 from password_generator import PasswordGenerator
+import argon2
+from cryptography.fernet import Fernet
 import json
 import os
+import secret #secret key for Fernet you need to create your own
 
-if not os.path.isfile('./users.dic'):
-    with open('./users.dic', 'w') as f:
-        f.write('{}')
+
+
+def hash_pass(password):
+    ph = argon2.PasswordHasher()
+    hashed_pass = ph.hash(password)
+    return hashed_pass
+
 
 def open_file():
-    with open('./users.dic') as db:
-        f_dict = db.read()
-    return json.loads(f_dict)
+    fernet = Fernet(secret.s_key)
+    with open('./users.dic') as encr_db:
+        encrypted_dict = encr_db.read()
+    decrypted_dict = fernet.decrypt(encrypted_dict)
+    return json.loads(decrypted_dict)
 
 def write_file(js_dict):
     dict_json = json.dumps(js_dict)
     with open('./users.dic', 'w') as db:
         db.write(dict_json)
-        
+    encrypt_file()
+
+def encrypt_file():
+    fernet = Fernet(secret.s_key)
+    with open('./users.dic', 'rb') as file:
+        original = file.read()
+
+    dict_encrypted = fernet.encrypt(original)
+
+    with open('./users.dic', 'wb') as enc_file:
+        enc_file.write(dict_encrypted)
+
 def generate_password():
     rng_password = PasswordGenerator()
     rng_password.minlen = 4
@@ -26,32 +46,31 @@ def generate_password():
     return rng_password.generate()
 
 
-def create_user(*args):
+def create_user(login, password):
     js_dict = open_file()
-    if args[0] in js_dict:
+    if login in js_dict:
         return False, None
-    passwordo = args[1]
-    if not args[1]:
+    passwordo = password
+    if not password:
         passwordo = generate_password()
-    js_dict[args[0]] = passwordo
+    js_dict[login] = hash_pass(passwordo)
     write_file(js_dict)
     return True, passwordo
 
 
-def user_login(*args):
+def user_login(login, password):
     js_dict = open_file()
-    if args[0] in js_dict and js_dict[args[0]] == args[1]:
-        return True
-    else:
+    ph = argon2.PasswordHasher()
+    try:
+        return ph.verify(js_dict[login], password)
+    except (argon2.exceptions.VerifyMismatchError, KeyError):
         return False
-
 
 def delete_user(user_name):
     js_dict = open_file()
     if user_name not in js_dict:
         return False
-    else:
-        del js_dict[user_name]
+    del js_dict[user_name]
     write_file(js_dict)
     return True
 
@@ -59,3 +78,8 @@ def delete_user(user_name):
 def get_list():
     js_dict = open_file()
     return '\n'.join(js_dict.keys())  # users_list
+
+if not os.path.isfile('./users.dic'):
+    with open('./users.dic', 'w') as f:
+        f.write('{}')
+    encrypt_file()
