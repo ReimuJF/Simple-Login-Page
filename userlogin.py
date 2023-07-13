@@ -20,7 +20,7 @@ class Login:
         return hashed_pass
 
     def open_file(self):
-        with open('./users.dic') as encr_db:
+        with open(self.dbfile) as encr_db:
             encrypted_dict = encr_db.read()
         decrypted_dict = self.fernet.decrypt(encrypted_dict)
         return json.loads(decrypted_dict)
@@ -82,4 +82,4 @@ class Login:
 
     def get_list(self):
         js_dict = self.open_file()
-        return '\n'.join(js_dict.keys())  # users_list
+        return '\n'.join(js_dict) if len(js_dict) > 0 else 'No users found' # users_list
