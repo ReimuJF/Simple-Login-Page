@@ -46,7 +46,6 @@ class SqliteWork:
         query = self.run_query(sqlite_select_query)
         return dict(query)
 
-
     def delete_entry(self, login):
         sqlite_delete_query = f"""DELETE FROM users WHERE login = '{login}'"""
         self.run_query(sqlite_delete_query)

@@ -25,7 +25,6 @@ class Login:
         except (argon2.exceptions.VerifyMismatchError, KeyError):
             return False
 
-
     def delete_user(self, user_name: str) -> bool:
         table = self.database.get_users()
         if user_name not in table:
