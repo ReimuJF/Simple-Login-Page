@@ -3,3 +3,4 @@
 *.pyc
 /users.dic
 /users.db
+*.db
