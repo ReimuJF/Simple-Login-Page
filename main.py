@@ -27,18 +27,16 @@ class LoginWindow(tk.Tk):
     def login_button(self):
         check = self.Login.user_login(self.entry_login.get(), self.entry_password.get())
         if check:
-            tkinter.messagebox.showinfo("Success", f"Hello {self.entry_login.get()}")
+            tkinter.messagebox.showinfo("Success", f"Hello {self.entry_login.get()}!")
             self.clear_entry()
         else:
             tkinter.messagebox.showinfo("Error", "Wrong login or password")
 
 
     def sign_button(self):
-        check, check_pass = self.Login.create_user(self.entry_login.get(), self.entry_password.get())
+        check = self.Login.create_user(self.entry_login.get(), self.entry_password.get())
         if check:
             tkinter.messagebox.showinfo("Success", f"User {self.entry_login.get()} created")
-            tkinter.messagebox.showinfo("Success", f"your password: {check_pass}" if
-            check_pass != self.entry_password.get() else "Remember your password")
             self.clear_entry()
         else:
             tkinter.messagebox.showinfo("Error", "This name already taken")
