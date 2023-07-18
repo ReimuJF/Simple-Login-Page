@@ -1,15 +1,16 @@
-from userlogin import Login
+from userlogin import LoginUser, EditUser
 import tkinter as tk
 import tkinter.messagebox
 
 
 class LoginWindow(tk.Tk):
     def __init__(self):
-        self.Login = Login()
+        self.Login = LoginUser()
+        self.Edit = EditUser()
         super().__init__()
         self.title('Simple Login Page')
         self.resizable(width=False, height=False)
-        self.geometry(f'310x110+{(self.winfo_screenwidth()//2)-300}+{(self.winfo_screenheight()//2)-300}')
+        self.geometry(f'310x110+{(self.winfo_screenwidth() // 2) - 300}+{(self.winfo_screenheight() // 2) - 300}')
         self.entry_login = tk.Entry(width=25)
         self.entry_password = tk.Entry(width=25, show="*")
         self.entry_login.grid(row=0, column=0, padx=10)
@@ -23,7 +24,6 @@ class LoginWindow(tk.Tk):
         self.button_delete = tk.Button(text='DELETE USER', width=15, command=self.delete_button)
         self.button_delete.grid(row=2, column=1, pady=10, sticky='es', padx=10)
 
-
     def login_button(self):
         check = self.Login.user_login(self.entry_login.get(), self.entry_password.get())
         if check:
@@ -32,33 +32,30 @@ class LoginWindow(tk.Tk):
         else:
             tkinter.messagebox.showinfo("Error", "Wrong login or password")
 
-
     def sign_button(self):
-        check = self.Login.create_user(self.entry_login.get(), self.entry_password.get())
+        check = self.Edit.create_user(self.entry_login.get(), self.entry_password.get())
         if check:
             tkinter.messagebox.showinfo("Success", f"User {self.entry_login.get()} created")
             self.clear_entry()
         else:
             tkinter.messagebox.showinfo("Error", "This name already taken")
 
-
     def get_button(self):
         users_list = self.Login.get_list()
         tkinter.messagebox.showinfo("Success", f"{users_list}")
 
-
     def delete_button(self):
-        check = self.Login.delete_user(self.entry_login.get())
+        check = self.Edit.delete_user(self.entry_login.get())
         if check:
             tkinter.messagebox.showinfo("Success", "User was deleted")
             self.clear_entry()
         else:
             tkinter.messagebox.showinfo("Error", "User not found")
 
-
     def clear_entry(self):
         self.entry_login.delete(0, tk.END)
         self.entry_password.delete(0, tk.END)
+
 
 if __name__ == "__main__":
     window = LoginWindow()
