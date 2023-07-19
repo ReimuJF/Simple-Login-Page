@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 
+
 class SqliteWork:
     def __init__(self):
         self.userdb = 'users.db'
@@ -39,7 +40,7 @@ class SqliteWork:
     def get_users(self) -> set:
         sqlite_select_query = '''SELECT login from users'''
         query = self.run_query(sqlite_select_query)
-        return {i[0] for i in query}
+        return { i[0] for i in query }
 
     def get_user_data(self, login) -> dict:
         sqlite_select_query = f'''SELECT login, pass from users where login = "{login}"'''
@@ -49,5 +50,3 @@ class SqliteWork:
     def delete_entry(self, login):
         sqlite_delete_query = f"""DELETE FROM users WHERE login = '{login}'"""
         self.run_query(sqlite_delete_query)
-
-

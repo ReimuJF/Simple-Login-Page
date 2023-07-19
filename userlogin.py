@@ -3,6 +3,7 @@ from sqldb import SqliteWork
 
 
 class LoginPage:
+
     def __init__(self):
         self.database = SqliteWork()
         self.ph = argon2.PasswordHasher()
